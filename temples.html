@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Temple Album — WDD131</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- CSS (mobile-first + large) -->
+  <link rel="stylesheet" href="styles/temples.css" />
+  <link rel="stylesheet" href="styles/temples-large.css" media="(min-width: 48rem)" />
+
+  <script src="scripts/temples.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand"><span>Temple Album</span></div>
+
+    <button id="menu-toggle" class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">
+      <span class="lines" aria-hidden="true"></span>
+    </button>
+
+    <nav id="primary-nav" class="nav" aria-label="Primary">
+      <ul>
+        <li><a class="active" href="#">Home</a></li>
+        <li><a href="#" data-filter="old">Old</a></li>
+        <li><a href="#" data-filter="new">New</a></li>
+        <li><a href="#" data-filter="large">Large</a></li>
+        <li><a href="#" data-filter="small">Small</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Home</h2>
+
+    <section class="album" id="album">
+      <!-- 9 figures usando a MESMA imagem (um único download) -->
+      <figure data-year="1993" data-size="large"><img alt="San Diego California Temple exterior" width="900" height="675" loading="lazy"><figcaption>San Diego California</figcaption></figure>
+      <figure data-year="1993" data-size="small"><img alt="San Diego California Temple exterior" width="900" height="675" loading="lazy"><figcaption>San Diego California</figcaption></figure>
+      <figure data-year="1980" data-size="large"><img alt="San Diego California Temple exterior" width="900" height="675" loading="lazy"><figcaption>San Diego California</figcaption></figure>
+      <figure data-year="2010" data-size="large"><img alt="San Diego California Temple exterior" width="900" height="675" loading="lazy"><figcaption>San Diego California</figcaption></figure>
+      <figure data-year="2010" data-size="small"><img alt="San Diego California Temple exterior" width="900" height="675" loading="lazy"><figcaption>San Diego California</figcaption></figure>
+      <figure data-year="2020" data-size="small"><img alt="San Diego California Temple exterior" width="900" height="675" loading="lazy"><figcaption>San Diego California</figcaption></figure>
+      <figure data-year="2020" data-size="large"><img alt="San Diego California Temple exterior" width="900" height="675" loading="lazy"><figcaption>San Diego California</figcaption></figure>
+      <figure data-year="1980" data-size="small"><img alt="San Diego California Temple exterior" width="900" height="675" loading="lazy"><figcaption>San Diego California</figcaption></figure>
+      <figure data-year="1993" data-size="large"><img alt="San Diego California Temple exterior" width="900" height="675" loading="lazy"><figcaption>San Diego California</figcaption></figure>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><span id="year"></span> © Caio Palladino Da Rosa</p>
+    <p id="modified"></p>
+    <p class="location">Petrópolis · Brazil</p>
+  </footer>
+</body>
+</html>
