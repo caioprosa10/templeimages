@@ -2,17 +2,133 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 document.getElementById("modified").textContent = `Last Modified: ${document.lastModified}`;
 
-// ===== Força o mesmo src em todas as imagens + tratamento de erro =====
-const IMG_SRC = "images/san-diego-temple-900-32c.png"; // mantenha esse caminho/arquivo
-document.querySelectorAll("#album img").forEach((img) => {
-  img.src = IMG_SRC;
-  img.addEventListener("error", () => {
-    console.warn("[IMG] Não foi possível carregar:", IMG_SRC, "- verifique nome/pasta.");
-    const fig = img.closest("figure");
-    if (fig) fig.style.outline = "2px dashed #d33";
-    img.alt = (img.alt || "Temple image") + " (imagem não encontrada)";
-  });
-});
+// ===== Dados dos templos =====
+const temples = [
+  // 7 originais
+  {
+    templeName: "Aba Nigeria",
+    location: "Aba, Nigeria",
+    dedicated: "2005, August, 7",
+    area: 11500,
+    imageUrl:
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/aba-nigeria/400x250/aba-nigeria-temple-lds-273999-wallpaper.jpg",
+  },
+  {
+    templeName: "Manti Utah",
+    location: "Manti, Utah, United States",
+    dedicated: "1888, May, 21",
+    area: 74792,
+    imageUrl:
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/manti-utah/400x250/manti-temple-768192-wallpaper.jpg",
+  },
+  {
+    templeName: "Payson Utah",
+    location: "Payson, Utah, United States",
+    dedicated: "2015, June, 7",
+    area: 96630,
+    imageUrl:
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/payson-utah/400x225/payson-utah-temple-exterior-1416671-wallpaper.jpg",
+  },
+  {
+    templeName: "Yigo Guam",
+    location: "Yigo, Guam",
+    dedicated: "2020, May, 2",
+    area: 6861,
+    imageUrl:
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/yigo-guam/400x250/yigo_guam_temple_2.jpg",
+  },
+  {
+    templeName: "Washington D.C.",
+    location: "Kensington, Maryland, United States",
+    dedicated: "1974, November, 19",
+    area: 156558,
+    imageUrl:
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/washington-dc/400x250/washington_dc_temple-exterior-2.jpeg",
+  },
+  {
+    templeName: "Lima Perú",
+    location: "Lima, Perú",
+    dedicated: "1986, January, 10",
+    area: 9600,
+    imageUrl:
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/lima-peru/400x250/lima-peru-temple-evening-1075606-wallpaper.jpg",
+  },
+  {
+    templeName: "Mexico City Mexico",
+    location: "Mexico City, Mexico",
+    dedicated: "1983, December, 2",
+    area: 116642,
+    imageUrl:
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/mexico-city-mexico/400x250/mexico-city-temple-exterior-1518361-wallpaper.jpg",
+  },
+
+  // +3 adicionados
+  {
+    templeName: "Rome Italy",
+    location: "Rome, Italy",
+    dedicated: "2019, March, 10",
+    area: 41010,
+    imageUrl:
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/rome-italy/400x250/rome-italy-temple-2172192.jpg",
+  },
+  {
+    templeName: "São Paulo Brazil",
+    location: "São Paulo, Brazil",
+    dedicated: "1978, October, 30",
+    area: 59246,
+    imageUrl:
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/sao-paulo-brazil/400x250/sao-paulo-brazil-temple-lds-1076081-wallpaper.jpg",
+  },
+  {
+    templeName: "Salt Lake Utah",
+    location: "Salt Lake City, Utah, United States",
+    dedicated: "1893, April, 6",
+    area: 382207,
+    imageUrl:
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/salt-lake-temple/400x250/salt-lake-temple-37762.jpg",
+  },
+];
+
+// ===== Helpers =====
+const album = document.getElementById("album");
+const h2 = document.querySelector("main h2");
+
+function yearFromDedicated(d) {
+  // formato: "YYYY, Month, Day" → pega os 4 primeiros
+  const y = parseInt(String(d).slice(0, 4), 10);
+  return Number.isFinite(y) ? y : 0;
+}
+
+function cardTemplate(t) {
+  const article = document.createElement("article");
+  article.className = "card";
+
+  const h3 = document.createElement("h3");
+  h3.textContent = t.templeName;
+
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  meta.innerHTML = `
+    <div><span class="label">Location:</span> ${t.location}</div>
+    <div><span class="label">Dedicated:</span> ${t.dedicated}</div>
+    <div><span class="label">Size:</span> ${t.area.toLocaleString()} sq ft</div>
+  `;
+
+  const img = document.createElement("img");
+  img.loading = "lazy";
+  img.src = t.imageUrl;
+  img.alt = `${t.templeName} Temple exterior`;
+
+  article.append(h3, meta, img);
+  return article;
+}
+
+function render(list) {
+  album.innerHTML = "";
+  const frag = document.createDocumentFragment();
+  list.forEach((t) => frag.appendChild(cardTemplate(t)));
+  album.appendChild(frag);
+}
 
 // ===== Menu hambúrguer (mobile) =====
 const btn = document.getElementById("menu-toggle");
@@ -24,10 +140,7 @@ function openMenu(open) {
   btn.setAttribute("aria-expanded", String(open));
   navList.classList.toggle("show", open);
 }
-
-// garante estado inicial SEMPRE fechado (mesmo se alguém deixar 'open' no HTML)
 document.addEventListener("DOMContentLoaded", () => openMenu(false));
-
 btn.addEventListener("click", () => openMenu(!btn.classList.contains("open")));
 btn.addEventListener("keydown", (e) => {
   if (e.key === "Enter" || e.key === " ") { e.preventDefault(); btn.click(); }
@@ -38,8 +151,6 @@ MQ.addEventListener("change", () => openMenu(false));
 navList.addEventListener("click", (e) => { if (e.target.tagName === "A" && !MQ.matches) openMenu(false); });
 
 // ===== Filtros =====
-const album = document.getElementById("album");
-const figures = [...album.querySelectorAll("figure")];
 const links = [...document.querySelectorAll("#primary-nav a")];
 
 function setActive(link){
@@ -50,54 +161,38 @@ function setActive(link){
     a.setAttribute("aria-pressed", on ? "true" : "false");
   });
 }
-function showFigure(fig){ fig.classList.remove("is-hidden"); requestAnimationFrame(()=>fig.classList.add("fade-in")); setTimeout(()=>fig.classList.remove("fade-in"),250); }
-function hideFigure(fig){ fig.classList.add("fade-out"); setTimeout(()=>{ fig.classList.remove("fade-out"); fig.classList.add("is-hidden"); },200); }
-function applyFilter(type){
-  figures.forEach(fig=>{
-    const year = Number(fig.dataset.year);
-    const size = fig.dataset.size;
-    let keep = true;
-    if(type==="old") keep = year < 2000;
-    if(type==="new") keep = year >= 2000;
-    if(type==="large") keep = size==="large";
-    if(type==="small") keep = size==="small";
-    (keep ? showFigure : hideFigure)(fig);
-  });
+
+function applyFilter(type) {
+  let filtered = temples.slice();
+
+  if (type === "old") {
+    filtered = filtered.filter(t => yearFromDedicated(t.dedicated) < 1900);
+    h2.textContent = "Old";
+  } else if (type === "new") {
+    filtered = filtered.filter(t => yearFromDedicated(t.dedicated) > 2000); // after 2000
+    h2.textContent = "New";
+  } else if (type === "large") {
+    filtered = filtered.filter(t => t.area > 90000);
+    h2.textContent = "Large";
+  } else if (type === "small") {
+    filtered = filtered.filter(t => t.area < 10000);
+    h2.textContent = "Small";
+  } else {
+    h2.textContent = "Home";
+  }
+
+  render(filtered);
 }
+
 links.forEach(link=>{
   link.addEventListener("click",(e)=>{
     e.preventDefault();
     setActive(link);
-    const filter = link.dataset.filter;
-    const h2 = document.querySelector("main h2");
-    if(!filter){ figures.forEach(showFigure); h2.textContent="Home"; }
-    else { applyFilter(filter); h2.textContent = link.textContent; }
+    applyFilter(link.dataset.filter || "");
   });
   link.addEventListener("keydown",(e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); link.click(); }});
 });
 
-// ===== Diagnóstico/Fallback p/ CSS large (se não carregar, aplica regras mínimas) =====
-function largeCssAtivo() {
-  const isDesktop = window.matchMedia("(min-width: 48rem)").matches;
-  if (!isDesktop) return true; // não testa em mobile
-  const btnDisplay = getComputedStyle(document.querySelector(".menu-toggle")).display;
-  return btnDisplay === "none"; // no desktop o botão deve sumir
-}
-function aplicarFallbackDesktopMinimo() {
-  const style = document.createElement("style");
-  style.textContent = `
-    @media (min-width: 48rem) {
-      .menu-toggle{ display:none !important; }
-      .nav ul{ display:flex !important; position:static !important;
-               flex-direction:row !important; gap:.5rem; background:transparent; box-shadow:none; }
-      .album{ grid-template-columns:repeat(3,1fr) !important; gap:1.25rem !important; }
-    }
-  `;
-  document.head.appendChild(style);
-}
-window.addEventListener("load", () => {
-  if (!largeCssAtivo()) {
-    console.warn("[CSS] 'temples-large.css' não parece ativo. Aplicando fallback mínimo.");
-    aplicarFallbackDesktopMinimo();
-  }
-});
+// ===== Inicialização =====
+render(temples);
+
