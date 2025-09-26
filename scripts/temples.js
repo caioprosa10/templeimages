@@ -1,4 +1,4 @@
-// ===== Footer dinâmico =====
+// ===== Footer =====
 document.getElementById("year").textContent = new Date().getFullYear();
 document.getElementById("modified").textContent = `Last Modified: ${document.lastModified}`;
 
@@ -7,45 +7,25 @@ const album = document.getElementById("album");
 const h2 = document.querySelector("main h2");
 const LOCAL_FALLBACK = "images/san-diego-temple-900-32c.png";
 
-function yearFromDedicated(d){
-  const y = parseInt(String(d).slice(0,4),10);
-  return Number.isFinite(y) ? y : 0;
-}
-
-// carrega com robustez: tenta várias fontes até funcionar, senão fallback local
+// tenta várias URLs -> se todas falharem, usa fallback local
 function robustLoad(img, sources){
-  // normaliza: string -> [string]
   const urls = Array.isArray(sources) ? sources.slice() : [sources];
-  // garante que o fallback local é a última opção
   if (!urls.includes(LOCAL_FALLBACK)) urls.push(LOCAL_FALLBACK);
-
   img.dataset.idx = "0";
-  function trySrc(i){
-    img.src = urls[i];
-  }
+  function trySrc(i){ img.src = urls[i]; }
   img.addEventListener("error", () => {
-    const i = parseInt(img.dataset.idx || "0", 10);
-    const next = i + 1;
-    if (next < urls.length){
-      img.dataset.idx = String(next);
-      trySrc(next);
-    } else {
-      // terminou todas as tentativas → mostra contorno de debug (opcional)
-      const fig = img.closest(".card");
-      if (fig) fig.style.outline = "2px dashed #d33";
-    }
-  }, { once:false });
-
+    const next = parseInt(img.dataset.idx||"0",10)+1;
+    if (next < urls.length){ img.dataset.idx = String(next); trySrc(next); }
+  });
   trySrc(0);
 }
 
+function yearFromDedicated(d){ const y = parseInt(String(d).slice(0,4),10); return Number.isFinite(y)?y:0; }
+
 function cardTemplate(t){
-  const article = document.createElement("article");
-  article.className = "card";
-
-  const h3 = document.createElement("h3");
-  h3.textContent = t.templeName;
-
+  const el = document.createElement("article");
+  el.className = "card";
+  const h3 = document.createElement("h3"); h3.textContent = t.templeName;
   const meta = document.createElement("div");
   meta.className = "meta";
   meta.innerHTML = `
@@ -53,28 +33,17 @@ function cardTemplate(t){
     <div><span class="label">Dedicated:</span> ${t.dedicated}</div>
     <div><span class="label">Size:</span> ${t.area.toLocaleString()} sq ft</div>
   `;
-
   const img = document.createElement("img");
   img.loading = "lazy";
   img.alt = `${t.templeName} Temple exterior`;
-
-  // carregamento robusto
+  img.referrerPolicy = "no-referrer"; // ajuda em hotlink bloqueado
   robustLoad(img, t.imageUrls || t.imageUrl);
-
-  article.append(h3, meta, img);
-  return article;
+  el.append(h3, meta, img);
+  return el;
 }
+function render(list){ album.innerHTML=""; const f=document.createDocumentFragment(); list.forEach(t=>f.appendChild(cardTemplate(t))); album.appendChild(f); }
 
-function render(list){
-  album.innerHTML = "";
-  const frag = document.createDocumentFragment();
-  list.forEach(t => frag.appendChild(cardTemplate(t)));
-  album.appendChild(frag);
-}
-
-// ===== Dados dos templos (7 originais + 3 novos) =====
-// Para os três que falharam nas suas capturas (Rome, São Paulo, Salt Lake),
-// incluí variações prováveis (.jpg/.jpeg e 400x250/400x225).
+// ===== Dados (10 templos) com URLs oficiais e backups =====
 const temples = [
   {
     templeName: "Aba Nigeria",
@@ -147,16 +116,19 @@ const temples = [
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/mexico-city-mexico/400x225/mexico-city-temple-exterior-1518361-wallpaper.jpg"
     ]
   },
-  // + 3 novos (com variantes para evitar 404)
+
+  // —— estes 3 eram os que quebravam nas suas capturas ——
   {
     templeName: "Rome Italy",
     location: "Rome, Italy",
     dedicated: "2019, March, 10",
     area: 41010,
     imageUrls: [
+      // oficial (variações comuns no CDN)
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/rome-italy/400x250/rome-italy-temple-2172192.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/rome-italy/400x225/rome-italy-temple-2172192.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/rome-italy/400x250/rome-italy-temple-2172192.jpeg"
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/rome-italy/400x250/rome-italy-temple-2172192.jpeg",
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/rome-italy/400x250/rome-italy-temple-lds-2172192-wallpaper.jpg",
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/rome-italy/400x225/rome-italy-temple-2172192.jpg"
     ]
   },
   {
@@ -167,7 +139,7 @@ const temples = [
     imageUrls: [
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/sao-paulo-brazil/400x250/sao-paulo-brazil-temple-lds-1076081-wallpaper.jpg",
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/sao-paulo-brazil/400x225/sao-paulo-brazil-temple-lds-1076081-wallpaper.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/sao-paulo-brazil/400x250/sao-paulo-brazil-temple-lds-1076081-wallpaper.jpeg"
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/sao-paulo-brazil/400x250/sao-paulo-brazil-temple-1076081.jpg"
     ]
   },
   {
@@ -177,70 +149,39 @@ const temples = [
     area: 382207,
     imageUrls: [
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/salt-lake-temple/400x250/salt-lake-temple-37762.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/salt-lake-temple/400x225/salt-lake-temple-37762.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/salt-lake-temple/400x250/salt-lake-temple-37762.jpeg"
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/salt-lake-temple/400x250/salt-lake-temple-lds-37762-wallpaper.jpg",
+      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/salt-lake-temple/400x225/salt-lake-temple-37762.jpg"
     ]
-  },
+  }
 ];
 
-// ===== Menu hambúrguer (mobile) =====
+// ===== Menu hambúrguer =====
 const btn = document.getElementById("menu-toggle");
 const navList = document.querySelector("#primary-nav ul");
 const MQ = window.matchMedia("(min-width: 48rem)");
-
-function openMenu(open){
-  btn.classList.toggle("open", open);
-  btn.setAttribute("aria-expanded", String(open));
-  navList.classList.toggle("show", open);
-}
-document.addEventListener("DOMContentLoaded", () => openMenu(false));
-btn.addEventListener("click", () => openMenu(!btn.classList.contains("open")));
-btn.addEventListener("keydown",(e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); btn.click(); }});
-document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") openMenu(false); });
-document.addEventListener("click",(e)=>{ if(!MQ.matches && !e.target.closest(".site-header")) openMenu(false); });
+function openMenu(open){ btn.classList.toggle("open",open); btn.setAttribute("aria-expanded",String(open)); navList.classList.toggle("show",open); }
+document.addEventListener("DOMContentLoaded",()=>openMenu(false));
+btn.addEventListener("click",()=>openMenu(!btn.classList.contains("open")));
+btn.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); btn.click(); }});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") openMenu(false); });
+document.addEventListener("click",e=>{ if(!MQ.matches && !e.target.closest(".site-header")) openMenu(false); });
 MQ.addEventListener("change",()=>openMenu(false));
-navList.addEventListener("click",(e)=>{ if(e.target.tagName==="A" && !MQ.matches) openMenu(false); });
+navList.addEventListener("click",e=>{ if(e.target.tagName==="A" && !MQ.matches) openMenu(false); });
 
 // ===== Filtros =====
 const links = [...document.querySelectorAll("#primary-nav a")];
-
-function setActive(link){
-  links.forEach(a=>{
-    const on = a===link;
-    a.classList.toggle("active", on);
-    a.setAttribute("aria-current", on ? "page" : "false");
-    a.setAttribute("aria-pressed", on ? "true" : "false");
-  });
-}
-
+function setActive(link){ links.forEach(a=>{ const on=a===link; a.classList.toggle("active",on); a.setAttribute("aria-current",on?"page":"false"); a.setAttribute("aria-pressed",on?"true":"false"); }); }
 function applyFilter(type){
   let filtered = temples.slice();
-
-  if(type==="old"){
-    filtered = filtered.filter(t => yearFromDedicated(t.dedicated) < 1900);
-    h2.textContent = "Old";
-  }else if(type==="new"){
-    filtered = filtered.filter(t => yearFromDedicated(t.dedicated) > 2000);
-    h2.textContent = "New";
-  }else if(type==="large"){
-    filtered = filtered.filter(t => t.area > 90000);
-    h2.textContent = "Large";
-  }else if(type==="small"){
-    filtered = filtered.filter(t => t.area < 10000);
-    h2.textContent = "Small";
-  }else{
-    h2.textContent = "Home";
-  }
-
+  if(type==="old"){ filtered = filtered.filter(t=>yearFromDedicated(t.dedicated)<1900); h2.textContent="Old"; }
+  else if(type==="new"){ filtered = filtered.filter(t=>yearFromDedicated(t.dedicated)>2000); h2.textContent="New"; }
+  else if(type==="large"){ filtered = filtered.filter(t=>t.area>90000); h2.textContent="Large"; }
+  else if(type==="small"){ filtered = filtered.filter(t=>t.area<10000); h2.textContent="Small"; }
+  else { h2.textContent="Home"; }
   render(filtered);
 }
-
 links.forEach(link=>{
-  link.addEventListener("click",(e)=>{
-    e.preventDefault();
-    setActive(link);
-    applyFilter(link.dataset.filter || "");
-  });
+  link.addEventListener("click",(e)=>{ e.preventDefault(); setActive(link); applyFilter(link.dataset.filter||""); });
   link.addEventListener("keydown",(e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); link.click(); }});
 });
 
