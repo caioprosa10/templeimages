@@ -12,27 +12,16 @@ function yearFromDedicated(d) {
   return Number.isFinite(y) ? y : 0;
 }
 
-// Carregamento robusto: tenta várias URLs, se falhar usa fallback local
+// tenta várias URLs; se falhar tudo, usa fallback local
 function robustLoad(img, sources) {
   const urls = Array.isArray(sources) ? sources.slice() : [sources];
   if (!urls.includes(LOCAL_FALLBACK)) urls.push(LOCAL_FALLBACK);
-
   img.dataset.idx = "0";
-  function trySrc(i) {
-    img.src = urls[i];
-  }
-  img.addEventListener(
-    "error",
-    () => {
-      const next = parseInt(img.dataset.idx || "0", 10) + 1;
-      if (next < urls.length) {
-        img.dataset.idx = String(next);
-        trySrc(next);
-      }
-    },
-    { once: false }
-  );
-
+  function trySrc(i) { img.src = urls[i]; }
+  img.addEventListener("error", () => {
+    const next = parseInt(img.dataset.idx || "0", 10) + 1;
+    if (next < urls.length) { img.dataset.idx = String(next); trySrc(next); }
+  });
   trySrc(0);
 }
 
@@ -54,7 +43,7 @@ function cardTemplate(t) {
   const img = document.createElement("img");
   img.loading = "lazy";
   img.alt = `${t.templeName} Temple exterior`;
-  img.referrerPolicy = "no-referrer";
+  img.referrerPolicy = "no-referrer"; // evita bloqueio de hotlink em alguns hosts
 
   robustLoad(img, t.imageUrls || t.imageUrl);
 
@@ -142,15 +131,16 @@ const temples = [
     ],
   },
 
-  // ===== 3 com URLs diretas do site oficial =====
+  // ===== 3 corrigidos com URL DIRETA de download =====
   {
     templeName: "Rome Italy",
     location: "Rome, Italy",
     dedicated: "2019, March, 10",
     area: 41010,
     imageUrls: [
-      // URL direta (arquivo) + backups CDN
-      "https://www.churchofjesuschrist.org/media/image/rome-italy-temple-08d5a9e/full/1600%2C/0/default",
+      // foto oficial — arquivo direto
+      "https://www.churchofjesuschrist.org/media/image/exterior-grounds-rome-italy-temple-60ecad3/full/1600%2C/0/default",
+      // backups (se o servidor ficar indisponível)
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/rome-italy/400x250/rome-italy-temple-2172192.jpg",
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/rome-italy/400x250/rome-italy-temple-2172192.jpeg",
     ],
@@ -161,9 +151,9 @@ const temples = [
     dedicated: "1978, October, 30",
     area: 59246,
     imageUrls: [
+      "https://www.churchofjesuschrist.org/media/image/sao-paulo-brazil-mormon-temple-beb9623/full/1600%2C/0/default",
       "https://www.churchofjesuschrist.org/media/image/sao-paulo-brazil-temple-lds-1856b27/full/1600%2C/0/default",
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/sao-paulo-brazil/400x250/sao-paulo-brazil-temple-lds-1076081-wallpaper.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/sao-paulo-brazil/400x225/sao-paulo-brazil-temple-lds-1076081-wallpaper.jpg",
     ],
   },
   {
@@ -172,7 +162,7 @@ const temples = [
     dedicated: "1893, April, 6",
     area: 382207,
     imageUrls: [
-      "https://www.churchofjesuschrist.org/media/image/salt-lake-temple-c19414e/full/1600%2C/0/default",
+      "https://www.churchofjesuschrist.org/media/image/salt-lake-temple-2f60566/full/1600%2C/0/default",
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/salt-lake-temple/400x250/salt-lake-temple-37762.jpg",
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/salt-lake-temple/400x225/salt-lake-temple-37762.jpg",
     ],
@@ -192,21 +182,12 @@ function openMenu(open) {
 document.addEventListener("DOMContentLoaded", () => openMenu(false));
 btn.addEventListener("click", () => openMenu(!btn.classList.contains("open")));
 btn.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    btn.click();
-  }
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); btn.click(); }
 });
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") openMenu(false);
-});
-document.addEventListener("click", (e) => {
-  if (!MQ.matches && !e.target.closest(".site-header")) openMenu(false);
-});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") openMenu(false); });
+document.addEventListener("click", (e) => { if (!MQ.matches && !e.target.closest(".site-header")) openMenu(false); });
 MQ.addEventListener("change", () => openMenu(false));
-navList.addEventListener("click", (e) => {
-  if (e.target.tagName === "A" && !MQ.matches) openMenu(false);
-});
+navList.addEventListener("click", (e) => { if (e.target.tagName === "A" && !MQ.matches) openMenu(false); });
 
 // ===== Filtros =====
 const links = [...document.querySelectorAll("#primary-nav a")];
@@ -223,21 +204,11 @@ function setActive(link) {
 function applyFilter(type) {
   let filtered = temples.slice();
 
-  if (type === "old") {
-    filtered = filtered.filter((t) => yearFromDedicated(t.dedicated) < 1900);
-    h2.textContent = "Old";
-  } else if (type === "new") {
-    filtered = filtered.filter((t) => yearFromDedicated(t.dedicated) > 2000);
-    h2.textContent = "New";
-  } else if (type === "large") {
-    filtered = filtered.filter((t) => t.area > 90000);
-    h2.textContent = "Large";
-  } else if (type === "small") {
-    filtered = filtered.filter((t) => t.area < 10000);
-    h2.textContent = "Small";
-  } else {
-    h2.textContent = "Home";
-  }
+  if (type === "old") { filtered = filtered.filter((t) => yearFromDedicated(t.dedicated) < 1900); h2.textContent = "Old"; }
+  else if (type === "new") { filtered = filtered.filter((t) => yearFromDedicated(t.dedicated) > 2000); h2.textContent = "New"; }
+  else if (type === "large") { filtered = filtered.filter((t) => t.area > 90000); h2.textContent = "Large"; }
+  else if (type === "small") { filtered = filtered.filter((t) => t.area < 10000); h2.textContent = "Small"; }
+  else { h2.textContent = "Home"; }
 
   render(filtered);
 }
@@ -249,10 +220,7 @@ links.forEach((link) => {
     applyFilter(link.dataset.filter || "");
   });
   link.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      link.click();
-    }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); link.click(); }
   });
 });
 
