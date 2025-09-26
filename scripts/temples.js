@@ -1,195 +1,154 @@
-// ===== Footer dinâmico =====
+/* =========================
+   W04 - Filtered Temples
+   Author: Caio Palladino Da Rosa
+   ========================= */
+
+/* ---------- Footer dinâmico ---------- */
 document.getElementById("year").textContent = new Date().getFullYear();
 document.getElementById("modified").textContent = `Last Modified: ${document.lastModified}`;
 
-// ===== Helpers =====
-const album = document.getElementById("album");
-const h2 = document.querySelector("main h2");
-const LOCAL_FALLBACK = "images/san-diego-temple-900-32c.png";
-
-function yearFromDedicated(d) {
-  const y = parseInt(String(d).slice(0, 4), 10);
-  return Number.isFinite(y) ? y : 0;
-}
-
-// tenta várias URLs; se falhar tudo, usa fallback local
-function robustLoad(img, sources) {
-  const urls = Array.isArray(sources) ? sources.slice() : [sources];
-  if (!urls.includes(LOCAL_FALLBACK)) urls.push(LOCAL_FALLBACK);
-  img.dataset.idx = "0";
-  function trySrc(i) { img.src = urls[i]; }
-  img.addEventListener("error", () => {
-    const next = parseInt(img.dataset.idx || "0", 10) + 1;
-    if (next < urls.length) { img.dataset.idx = String(next); trySrc(next); }
-  });
-  trySrc(0);
-}
-
-function cardTemplate(t) {
-  const article = document.createElement("article");
-  article.className = "card";
-
-  const h3 = document.createElement("h3");
-  h3.textContent = t.templeName;
-
-  const meta = document.createElement("div");
-  meta.className = "meta";
-  meta.innerHTML = `
-    <div><span class="label">Location:</span> ${t.location}</div>
-    <div><span class="label">Dedicated:</span> ${t.dedicated}</div>
-    <div><span class="label">Size:</span> ${t.area.toLocaleString()} sq ft</div>
-  `;
-
-  const img = document.createElement("img");
-  img.loading = "lazy";
-  img.alt = `${t.templeName} Temple exterior`;
-  img.referrerPolicy = "no-referrer"; // evita bloqueio de hotlink em alguns hosts
-
-  robustLoad(img, t.imageUrls || t.imageUrl);
-
-  article.append(h3, meta, img);
-  return article;
-}
-
-function render(list) {
-  album.innerHTML = "";
-  const frag = document.createDocumentFragment();
-  list.forEach((t) => frag.appendChild(cardTemplate(t)));
-  album.appendChild(frag);
-}
-
-// ===== Dados dos templos (7 originais + 3 novos) =====
+/* ---------- Dados (7 originais + 3 extras) ---------- */
+/* Imagens estáveis (Wikimedia Commons) para os que falhavam:
+   - Rome Italy Temple: https://upload.wikimedia.org/wikipedia/commons/8/8b/RomeTempleatSunset.jpg
+   - São Paulo Brazil Temple: https://upload.wikimedia.org/wikipedia/commons/c/c4/Sao_Paulo_Brazil_Temple.jpg
+   - Salt Lake Temple: https://upload.wikimedia.org/wikipedia/commons/9/93/Salt_Lake_Temple%2C_Utah_-_Sept_2004-2.jpg
+   Créditos/licenças: ver páginas dos arquivos no Wikimedia Commons. */
 const temples = [
+  // originais fornecidos
   {
     templeName: "Aba Nigeria",
     location: "Aba, Nigeria",
     dedicated: "2005, August, 7",
     area: 11500,
-    imageUrls: [
+    imageUrl:
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/aba-nigeria/400x250/aba-nigeria-temple-lds-273999-wallpaper.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/aba-nigeria/400x225/aba-nigeria-temple-lds-273999-wallpaper.jpg",
-    ],
   },
   {
     templeName: "Manti Utah",
     location: "Manti, Utah, United States",
     dedicated: "1888, May, 21",
     area: 74792,
-    imageUrls: [
+    imageUrl:
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/manti-utah/400x250/manti-temple-768192-wallpaper.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/manti-utah/400x225/manti-temple-768192-wallpaper.jpg",
-    ],
   },
   {
     templeName: "Payson Utah",
     location: "Payson, Utah, United States",
     dedicated: "2015, June, 7",
     area: 96630,
-    imageUrls: [
+    imageUrl:
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/payson-utah/400x225/payson-utah-temple-exterior-1416671-wallpaper.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/payson-utah/400x250/payson-utah-temple-exterior-1416671-wallpaper.jpg",
-    ],
   },
   {
     templeName: "Yigo Guam",
     location: "Yigo, Guam",
     dedicated: "2020, May, 2",
     area: 6861,
-    imageUrls: [
+    imageUrl:
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/yigo-guam/400x250/yigo_guam_temple_2.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/yigo-guam/400x225/yigo_guam_temple_2.jpg",
-    ],
   },
   {
     templeName: "Washington D.C.",
     location: "Kensington, Maryland, United States",
     dedicated: "1974, November, 19",
     area: 156558,
-    imageUrls: [
+    imageUrl:
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/washington-dc/400x250/washington_dc_temple-exterior-2.jpeg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/washington-dc/400x250/washington_dc_temple-exterior-2.jpg",
-    ],
   },
   {
     templeName: "Lima Perú",
     location: "Lima, Perú",
     dedicated: "1986, January, 10",
     area: 9600,
-    imageUrls: [
+    imageUrl:
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/lima-peru/400x250/lima-peru-temple-evening-1075606-wallpaper.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/lima-peru/400x225/lima-peru-temple-evening-1075606-wallpaper.jpg",
-    ],
   },
   {
     templeName: "Mexico City Mexico",
     location: "Mexico City, Mexico",
     dedicated: "1983, December, 2",
     area: 116642,
-    imageUrls: [
+    imageUrl:
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/mexico-city-mexico/400x250/mexico-city-temple-exterior-1518361-wallpaper.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/mexico-city-mexico/400x225/mexico-city-temple-exterior-1518361-wallpaper.jpg",
-    ],
   },
 
-  // ===== 3 corrigidos com URL DIRETA de download =====
+  // +3 que você precisava com as FOTOS REAIS
   {
     templeName: "Rome Italy",
     location: "Rome, Italy",
     dedicated: "2019, March, 10",
     area: 41010,
-    imageUrls: [
-      // foto oficial — arquivo direto
-      "https://www.churchofjesuschrist.org/media/image/exterior-grounds-rome-italy-temple-60ecad3/full/1600%2C/0/default",
-      // backups (se o servidor ficar indisponível)
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/rome-italy/400x250/rome-italy-temple-2172192.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/rome-italy/400x250/rome-italy-temple-2172192.jpeg",
-    ],
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/8/8b/RomeTempleatSunset.jpg", // Wikimedia (CC BY-SA 4.0)
   },
   {
     templeName: "São Paulo Brazil",
     location: "São Paulo, Brazil",
     dedicated: "1978, October, 30",
     area: 59246,
-    imageUrls: [
-      "https://www.churchofjesuschrist.org/media/image/sao-paulo-brazil-mormon-temple-beb9623/full/1600%2C/0/default",
-      "https://www.churchofjesuschrist.org/media/image/sao-paulo-brazil-temple-lds-1856b27/full/1600%2C/0/default",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/sao-paulo-brazil/400x250/sao-paulo-brazil-temple-lds-1076081-wallpaper.jpg",
-    ],
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/c/c4/Sao_Paulo_Brazil_Temple.jpg", // Wikimedia (CC BY-SA 2.0)
   },
   {
     templeName: "Salt Lake Utah",
     location: "Salt Lake City, Utah, United States",
     dedicated: "1893, April, 6",
     area: 382207,
-    imageUrls: [
-      "https://www.churchofjesuschrist.org/media/image/salt-lake-temple-2f60566/full/1600%2C/0/default",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/salt-lake-temple/400x250/salt-lake-temple-37762.jpg",
-      "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/salt-lake-temple/400x225/salt-lake-temple-37762.jpg",
-    ],
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/9/93/Salt_Lake_Temple%2C_Utah_-_Sept_2004-2.jpg", // Wikimedia (CC BY 2.5/3.0/GFDL)
   },
 ];
 
-// ===== Menu hambúrguer (mobile) =====
-const btn = document.getElementById("menu-toggle");
-const navList = document.querySelector("#primary-nav ul");
-const MQ = window.matchMedia("(min-width: 48rem)");
+/* ---------- Helpers ---------- */
+const album = document.getElementById("album");
+const titleH2 = document.querySelector("main h2");
 
-function openMenu(open) {
-  btn.classList.toggle("open", open);
-  btn.setAttribute("aria-expanded", String(open));
-  navList.classList.toggle("show", open);
+function createCard(t) {
+  const fig = document.createElement("figure");
+  fig.className = "temple-card";
+  // dataset auxilia nos filtros alternativos, se quiser
+  fig.dataset.area = t.area;
+  fig.dataset.year = Number(t.dedicated.split(",")[0]);
+
+  const h3 = document.createElement("h3");
+  h3.textContent = t.templeName;
+
+  const pLoc = document.createElement("p");
+  pLoc.innerHTML = `<strong>LOCATION:</strong> ${t.location}`;
+
+  const pDed = document.createElement("p");
+  pDed.innerHTML = `<strong>DEDICATED:</strong> ${t.dedicated}`;
+
+  const pArea = document.createElement("p");
+  pArea.innerHTML = `<strong>SIZE:</strong> ${Number(t.area).toLocaleString("en-US")} sq ft`;
+
+  const img = document.createElement("img");
+  img.src = t.imageUrl;
+  img.alt = `${t.templeName} Temple exterior`;
+  img.loading = "lazy";
+  img.width = 900;
+  img.height = 675;
+
+  // Tratamento de erro de imagem
+  img.addEventListener("error", () => {
+    console.warn("[IMG] Falha ao carregar:", t.imageUrl);
+    img.replaceWith(document.createTextNode("Imagem indisponível"));
+    fig.style.outline = "2px dashed #d33";
+  });
+
+  fig.append(h3, pLoc, pDed, pArea, img);
+  return fig;
 }
-document.addEventListener("DOMContentLoaded", () => openMenu(false));
-btn.addEventListener("click", () => openMenu(!btn.classList.contains("open")));
-btn.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); btn.click(); }
-});
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") openMenu(false); });
-document.addEventListener("click", (e) => { if (!MQ.matches && !e.target.closest(".site-header")) openMenu(false); });
-MQ.addEventListener("change", () => openMenu(false));
-navList.addEventListener("click", (e) => { if (e.target.tagName === "A" && !MQ.matches) openMenu(false); });
 
-// ===== Filtros =====
+function render(list, heading = "Home") {
+  album.innerHTML = "";
+  list.forEach((t) => album.appendChild(createCard(t)));
+  titleH2.textContent = heading;
+  // rola para o topo para evitar footer cobrindo cards ao trocar filtro
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------- Filtros ---------- */
 const links = [...document.querySelectorAll("#primary-nav a")];
 
 function setActive(link) {
@@ -201,28 +160,62 @@ function setActive(link) {
   });
 }
 
-function applyFilter(type) {
-  let filtered = temples.slice();
-
-  if (type === "old") { filtered = filtered.filter((t) => yearFromDedicated(t.dedicated) < 1900); h2.textContent = "Old"; }
-  else if (type === "new") { filtered = filtered.filter((t) => yearFromDedicated(t.dedicated) > 2000); h2.textContent = "New"; }
-  else if (type === "large") { filtered = filtered.filter((t) => t.area > 90000); h2.textContent = "Large"; }
-  else if (type === "small") { filtered = filtered.filter((t) => t.area < 10000); h2.textContent = "Small"; }
-  else { h2.textContent = "Home"; }
-
-  render(filtered);
+function filter(type) {
+  if (!type) return temples;
+  return temples.filter((t) => {
+    const year = Number(t.dedicated.split(",")[0]);
+    if (type === "old") return year < 1900;
+    if (type === "new") return year > 2000;
+    if (type === "large") return t.area > 90000;
+    if (type === "small") return t.area < 10000;
+    return true;
+  });
 }
 
 links.forEach((link) => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
+    const type = link.dataset.filter || "";
     setActive(link);
-    applyFilter(link.dataset.filter || "");
+    const list = filter(type);
+    render(list, type ? link.textContent : "Home");
   });
   link.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); link.click(); }
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      link.click();
+    }
   });
 });
 
-// ===== Inicialização =====
-render(temples);
+/* ---------- Menu hambúrguer (mobile) ---------- */
+const btn = document.getElementById("menu-toggle");
+const navList = document.querySelector("#primary-nav ul");
+const MQ = window.matchMedia("(min-width: 48rem)");
+
+function openMenu(open) {
+  btn.classList.toggle("open", open);
+  btn.setAttribute("aria-expanded", String(open));
+  navList.classList.toggle("show", open);
+}
+document.addEventListener("DOMContentLoaded", () => openMenu(false));
+btn?.addEventListener("click", () => openMenu(!btn.classList.contains("open")));
+btn?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    btn.click();
+  }
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") openMenu(false);
+});
+document.addEventListener("click", (e) => {
+  if (!MQ.matches && !e.target.closest(".site-header")) openMenu(false);
+});
+MQ.addEventListener("change", () => openMenu(false));
+navList.addEventListener("click", (e) => {
+  if (e.target.tagName === "A" && !MQ.matches) openMenu(false);
+});
+
+/* ---------- Inicializa ---------- */
+render(temples, "Home");
