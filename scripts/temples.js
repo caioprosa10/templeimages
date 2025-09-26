@@ -2,9 +2,8 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 document.getElementById("modified").textContent = `Last Modified: ${document.lastModified}`;
 
-// ===== Dados dos templos =====
+// ===== Dados dos templos (7 originais + 3 novos) =====
 const temples = [
-  // 7 originais
   {
     templeName: "Aba Nigeria",
     location: "Aba, Nigeria",
@@ -61,8 +60,7 @@ const temples = [
     imageUrl:
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/mexico-city-mexico/400x250/mexico-city-temple-exterior-1518361-wallpaper.jpg",
   },
-
-  // +3 adicionados
+  // + 3 novos
   {
     templeName: "Rome Italy",
     location: "Rome, Italy",
@@ -89,17 +87,16 @@ const temples = [
   },
 ];
 
-// ===== Helpers =====
+// ===== Helpers de renderização =====
 const album = document.getElementById("album");
 const h2 = document.querySelector("main h2");
 
-function yearFromDedicated(d) {
-  // formato: "YYYY, Month, Day" → pega os 4 primeiros
-  const y = parseInt(String(d).slice(0, 4), 10);
+function yearFromDedicated(d){
+  const y = parseInt(String(d).slice(0,4),10);
   return Number.isFinite(y) ? y : 0;
 }
 
-function cardTemplate(t) {
+function cardTemplate(t){
   const article = document.createElement("article");
   article.className = "card";
 
@@ -123,10 +120,10 @@ function cardTemplate(t) {
   return article;
 }
 
-function render(list) {
+function render(list){
   album.innerHTML = "";
   const frag = document.createDocumentFragment();
-  list.forEach((t) => frag.appendChild(cardTemplate(t)));
+  list.forEach(t => frag.appendChild(cardTemplate(t)));
   album.appendChild(frag);
 }
 
@@ -135,20 +132,18 @@ const btn = document.getElementById("menu-toggle");
 const navList = document.querySelector("#primary-nav ul");
 const MQ = window.matchMedia("(min-width: 48rem)");
 
-function openMenu(open) {
+function openMenu(open){
   btn.classList.toggle("open", open);
   btn.setAttribute("aria-expanded", String(open));
   navList.classList.toggle("show", open);
 }
 document.addEventListener("DOMContentLoaded", () => openMenu(false));
 btn.addEventListener("click", () => openMenu(!btn.classList.contains("open")));
-btn.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); btn.click(); }
-});
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") openMenu(false); });
-document.addEventListener("click", (e) => { if (!MQ.matches && !e.target.closest(".site-header")) openMenu(false); });
-MQ.addEventListener("change", () => openMenu(false));
-navList.addEventListener("click", (e) => { if (e.target.tagName === "A" && !MQ.matches) openMenu(false); });
+btn.addEventListener("keydown",(e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); btn.click(); }});
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") openMenu(false); });
+document.addEventListener("click",(e)=>{ if(!MQ.matches && !e.target.closest(".site-header")) openMenu(false); });
+MQ.addEventListener("change",()=>openMenu(false));
+navList.addEventListener("click",(e)=>{ if(e.target.tagName==="A" && !MQ.matches) openMenu(false); });
 
 // ===== Filtros =====
 const links = [...document.querySelectorAll("#primary-nav a")];
@@ -156,28 +151,28 @@ const links = [...document.querySelectorAll("#primary-nav a")];
 function setActive(link){
   links.forEach(a=>{
     const on = a===link;
-    a.classList.toggle("active",on);
+    a.classList.toggle("active", on);
     a.setAttribute("aria-current", on ? "page" : "false");
     a.setAttribute("aria-pressed", on ? "true" : "false");
   });
 }
 
-function applyFilter(type) {
+function applyFilter(type){
   let filtered = temples.slice();
 
-  if (type === "old") {
+  if(type==="old"){
     filtered = filtered.filter(t => yearFromDedicated(t.dedicated) < 1900);
     h2.textContent = "Old";
-  } else if (type === "new") {
-    filtered = filtered.filter(t => yearFromDedicated(t.dedicated) > 2000); // after 2000
+  }else if(type==="new"){
+    filtered = filtered.filter(t => yearFromDedicated(t.dedicated) > 2000);
     h2.textContent = "New";
-  } else if (type === "large") {
+  }else if(type==="large"){
     filtered = filtered.filter(t => t.area > 90000);
     h2.textContent = "Large";
-  } else if (type === "small") {
+  }else if(type==="small"){
     filtered = filtered.filter(t => t.area < 10000);
     h2.textContent = "Small";
-  } else {
+  }else{
     h2.textContent = "Home";
   }
 
@@ -195,4 +190,3 @@ links.forEach(link=>{
 
 // ===== Inicialização =====
 render(temples);
-
