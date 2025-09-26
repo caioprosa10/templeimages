@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Filtered Temples — WDD131</title>
+  <title>Temple Album — WDD131</title>
 
-  <!-- Performance hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <!-- CSS (mobile-first + large) -->
-  <link rel="stylesheet" href="styles/filtered-temples.css" />
-  <link rel="stylesheet" href="styles/filtered-temples-large.css" media="(min-width: 48rem)" />
+  <link rel="stylesheet" href="styles/temples.css" />
+  <link rel="stylesheet" href="styles/temples-large.css" media="(min-width: 48rem)" />
+  <script src="scripts/temples.js" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -36,7 +36,7 @@
   <main>
     <h2>Home</h2>
 
-    <!-- Lista vazia: será preenchida via JS -->
+    <!-- Vazio: os cards serão injetados via JS -->
     <section class="album" id="album" aria-live="polite"></section>
   </main>
 
@@ -45,8 +45,8 @@
     <p id="modified"></p>
     <p class="location">Petrópolis · Brazil</p>
   </footer>
-
-  <script src="scripts/filtered-temples.js" defer></script>
 </body>
 </html>
+
+
 
