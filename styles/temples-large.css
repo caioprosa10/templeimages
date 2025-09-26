@@ -1,4 +1,4 @@
-/* Layout desktop */
+/* Desktop layout */
 .menu-toggle{display:none}
 .site-header{padding:1rem 2rem}
 .nav{margin-left:auto}
@@ -11,3 +11,4 @@
 
 /* Grid 3 colunas */
 .album{grid-template-columns:repeat(3,1fr);gap:1.25rem}
+
