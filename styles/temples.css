@@ -1,12 +1,18 @@
 :root{
-  --bg:#f6f6fa; --ink:#1b1b22; --muted:#6a6a7a;
+  --bg:#f6f6fa; --ink:#1b1b22; --muted:#3a3a45;
   --brand:#3b0a85; --brand-2:#9d7de0; --brand-ink:#fff;
-  --card:#fff; --radius:16px; --shadow:0 2px 10px rgba(0,0,0,.07);
+  --card:#fff; --radius:12px; --shadow:0 2px 10px rgba(0,0,0,.07);
   --ring:0 0 0 3px rgba(157,125,224,.35);
+  --border:#d9d9e3;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+
+/* A11Y */
+.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.skip-link:focus{left:1rem;top:.5rem;width:auto;height:auto;background:#fff;color:#000;padding:.5rem .75rem;border-radius:.5rem;box-shadow:var(--ring);z-index:2000}
 
 /* Header */
 .site-header{
@@ -15,7 +21,7 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sa
 }
 .brand{font-weight:700;letter-spacing:.2px}
 
-/* Hambúrguer */
+/* Hamburger */
 .menu-toggle{margin-left:auto;background:transparent;border:0;cursor:pointer;width:44px;height:36px;position:relative}
 .menu-toggle .lines,.menu-toggle .lines::before,.menu-toggle .lines::after{
   content:"";position:absolute;left:9px;right:9px;height:2px;background:#fff;border-radius:2px;transition:.25s ease
@@ -44,28 +50,52 @@ main{max-width:68rem;margin:1rem auto;padding:0 1rem}
 main h2{text-align:center;margin:1rem 0 1.25rem}
 
 /* Grid */
-.album{display:grid;grid-template-columns:1fr;gap:1rem}
+.album{display:grid;grid-template-columns:1fr;gap:1.25rem}
 
-/* Card */
-.card{
-  border-radius:var(--radius);overflow:hidden;background:var(--card);
-  box-shadow:var(--shadow);padding:1rem;border:1px solid #ececf4
+/* =========================
+   Temple Card — estilo do screenshot
+   ========================= */
+.temple-card{
+  background:#f1f2f6;
+  border:1px solid var(--border);
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+  padding:1rem;
+  border-radius:12px;
 }
-.card h3{margin:.25rem 0 .75rem;text-align:center;font-weight:700}
-.meta{display:grid;gap:.25rem;justify-items:center;margin-bottom:.75rem;color:var(--muted);font-size:.95rem}
-.meta .label{letter-spacing:.04em;text-transform:uppercase;font-weight:700}
-.card img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:.75rem;box-shadow:0 10px 20px rgba(0,0,0,.12)}
-.card img:focus-visible{outline:none;box-shadow:var(--ring)}
-a:focus-visible{outline:none;box-shadow:var(--ring)}
+.temple-card h3{
+  font-size:1.7rem;
+  line-height:1.2;
+  text-align:center;
+  margin:.25rem 0 .85rem;
+  color:#1b1b22;
+  font-weight:700;
+}
+.temple-card p{
+  margin:.35rem 0;
+  color:var(--muted);
+  font-size:1rem;
+}
+.temple-card p strong{
+  font-variant:small-caps;
+  letter-spacing:.04em;
+  color:var(--brand);
+  font-weight:700;
+  margin-right:.25rem;
+}
+.temple-card img{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:4/3;
+  object-fit:cover;
+  border-radius:8px;
+  border:1px solid #e3e3ef;
+  box-shadow:0 8px 20px rgba(0,0,0,.12);
+  margin-top:.5rem;
+}
+a:focus-visible,.temple-card img:focus-visible{outline:none;box-shadow:var(--ring)}
 
 /* Footer */
 .site-footer{margin-top:2rem;background:var(--brand);color:#fff;text-align:center;padding:1rem}
 .site-footer p{margin:.25rem 0}
 .site-footer .location{color:#e9e4ff}
-
-/* Utils & animações */
-.is-hidden{display:none!important}
-.fade-in{animation:fadeIn .25s ease-out}
-.fade-out{animation:fadeOut .2s ease-in}
-@keyframes fadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
-@keyframes fadeOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.98)}}
