@@ -6,14 +6,17 @@
   <title>W04 — Filtered Temples | WDD131</title>
   <meta name="description" content="W04 — Filtered Temples: dynamic temple cards with lazy loading and interactive filters (Old, New, Large, Small). Built for WDD 131." />
 
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles/filtered-temples.css" />
-  <link rel="stylesheet" href="styles/filtered-temples-large.css" media="(min-width: 48rem)" />
+  <!-- CSS (usa os arquivos que já estão no seu repositório) -->
+  <link rel="stylesheet" href="styles/temples.css" />
+  <link rel="stylesheet" href="styles/temples-large.css" media="(min-width: 48rem)" />
 
-  <script src="scripts/filtered-temples.js" defer></script>
+  <!-- JS -->
+  <script src="scripts/temples.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#album">Skip to content</a>
@@ -40,6 +43,7 @@
     <h1 class="visually-hidden">W04 Assignment: Picture Album Enhancement</h1>
     <h2>Home</h2>
 
+    <!-- Cards gerados via JS -->
     <section class="album" id="album" aria-live="polite"></section>
   </main>
 
