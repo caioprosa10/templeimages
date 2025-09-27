@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (m) m.textContent = `Last Modified: ${document.lastModified}`;
 });
 
-/* Temple data (7 originais + 3 extras) */
+/* Dados: 7 originais + 3 extras */
 const temples = [
   {
     templeName: "Aba Nigeria",
@@ -70,7 +70,7 @@ const temples = [
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/mexico-city-mexico/400x250/mexico-city-temple-exterior-1518361-wallpaper.jpg",
   },
 
-  // 3 extras (com URLs estáveis do Wikimedia)
+  // 3 extras (URLs estáveis)
   {
     templeName: "Rome Italy",
     location: "Rome, Italy",
