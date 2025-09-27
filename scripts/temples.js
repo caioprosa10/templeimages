@@ -3,18 +3,16 @@
    Author: Caio Palladino Da Rosa
    ========================= */
 
-/* ---------- Footer dinâmico ---------- */
-document.getElementById("year").textContent = new Date().getFullYear();
-document.getElementById("modified").textContent = `Last Modified: ${document.lastModified}`;
+/* Footer dynamic */
+document.addEventListener("DOMContentLoaded", () => {
+  const y = document.getElementById("year");
+  const m = document.getElementById("modified");
+  if (y) y.textContent = new Date().getFullYear();
+  if (m) m.textContent = `Last Modified: ${document.lastModified}`;
+});
 
-/* ---------- Dados (7 originais + 3 extras) ---------- */
-/* Imagens estáveis (Wikimedia Commons) para os que falhavam:
-   - Rome Italy Temple: https://upload.wikimedia.org/wikipedia/commons/8/8b/RomeTempleatSunset.jpg
-   - São Paulo Brazil Temple: https://upload.wikimedia.org/wikipedia/commons/c/c4/Sao_Paulo_Brazil_Temple.jpg
-   - Salt Lake Temple: https://upload.wikimedia.org/wikipedia/commons/9/93/Salt_Lake_Temple%2C_Utah_-_Sept_2004-2.jpg
-   Créditos/licenças: ver páginas dos arquivos no Wikimedia Commons. */
+/* Temple data (7 originais + 3 extras) */
 const temples = [
-  // originais fornecidos
   {
     templeName: "Aba Nigeria",
     location: "Aba, Nigeria",
@@ -72,14 +70,14 @@ const temples = [
       "https://content.churchofjesuschrist.org/templesldsorg/bc/Temples/photo-galleries/mexico-city-mexico/400x250/mexico-city-temple-exterior-1518361-wallpaper.jpg",
   },
 
-  // +3 que você precisava com as FOTOS REAIS
+  // 3 extras (com URLs estáveis do Wikimedia)
   {
     templeName: "Rome Italy",
     location: "Rome, Italy",
     dedicated: "2019, March, 10",
     area: 41010,
     imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/8/8b/RomeTempleatSunset.jpg", // Wikimedia (CC BY-SA 4.0)
+      "https://upload.wikimedia.org/wikipedia/commons/8/8b/RomeTempleatSunset.jpg",
   },
   {
     templeName: "São Paulo Brazil",
@@ -87,7 +85,7 @@ const temples = [
     dedicated: "1978, October, 30",
     area: 59246,
     imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/c/c4/Sao_Paulo_Brazil_Temple.jpg", // Wikimedia (CC BY-SA 2.0)
+      "https://upload.wikimedia.org/wikipedia/commons/c/c4/Sao_Paulo_Brazil_Temple.jpg",
   },
   {
     templeName: "Salt Lake Utah",
@@ -95,18 +93,17 @@ const temples = [
     dedicated: "1893, April, 6",
     area: 382207,
     imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/9/93/Salt_Lake_Temple%2C_Utah_-_Sept_2004-2.jpg", // Wikimedia (CC BY 2.5/3.0/GFDL)
+      "https://upload.wikimedia.org/wikipedia/commons/9/93/Salt_Lake_Temple%2C_Utah_-_Sept_2004-2.jpg",
   },
 ];
 
-/* ---------- Helpers ---------- */
+/* Helpers */
 const album = document.getElementById("album");
 const titleH2 = document.querySelector("main h2");
 
 function createCard(t) {
   const fig = document.createElement("figure");
   fig.className = "temple-card";
-  // dataset auxilia nos filtros alternativos, se quiser
   fig.dataset.area = t.area;
   fig.dataset.year = Number(t.dedicated.split(",")[0]);
 
@@ -129,10 +126,9 @@ function createCard(t) {
   img.width = 900;
   img.height = 675;
 
-  // Tratamento de erro de imagem
   img.addEventListener("error", () => {
-    console.warn("[IMG] Falha ao carregar:", t.imageUrl);
-    img.replaceWith(document.createTextNode("Imagem indisponível"));
+    console.warn("[IMG] Failed to load:", t.imageUrl);
+    img.replaceWith(document.createTextNode("Image unavailable"));
     fig.style.outline = "2px dashed #d33";
   });
 
@@ -141,14 +137,14 @@ function createCard(t) {
 }
 
 function render(list, heading = "Home") {
+  if (!album) return;
   album.innerHTML = "";
   list.forEach((t) => album.appendChild(createCard(t)));
-  titleH2.textContent = heading;
-  // rola para o topo para evitar footer cobrindo cards ao trocar filtro
+  if (titleH2) titleH2.textContent = heading;
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-/* ---------- Filtros ---------- */
+/* Filters */
 const links = [...document.querySelectorAll("#primary-nav a")];
 
 function setActive(link) {
@@ -188,12 +184,13 @@ links.forEach((link) => {
   });
 });
 
-/* ---------- Menu hambúrguer (mobile) ---------- */
+/* Mobile menu */
 const btn = document.getElementById("menu-toggle");
 const navList = document.querySelector("#primary-nav ul");
 const MQ = window.matchMedia("(min-width: 48rem)");
 
 function openMenu(open) {
+  if (!btn || !navList) return;
   btn.classList.toggle("open", open);
   btn.setAttribute("aria-expanded", String(open));
   navList.classList.toggle("show", open);
@@ -213,9 +210,9 @@ document.addEventListener("click", (e) => {
   if (!MQ.matches && !e.target.closest(".site-header")) openMenu(false);
 });
 MQ.addEventListener("change", () => openMenu(false));
-navList.addEventListener("click", (e) => {
+navList?.addEventListener("click", (e) => {
   if (e.target.tagName === "A" && !MQ.matches) openMenu(false);
 });
 
-/* ---------- Inicializa ---------- */
+/* Init */
 render(temples, "Home");
