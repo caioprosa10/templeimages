@@ -9,7 +9,7 @@
 html,body{height:100%}
 body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
 
-/* A11Y */
+/* A11Y helpers */
 .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
 .skip-link:focus{left:1rem;top:.5rem;width:auto;height:auto;background:#fff;color:#000;padding:.5rem .75rem;border-radius:.5rem;box-shadow:var(--ring);z-index:2000}
@@ -52,9 +52,7 @@ main h2{text-align:center;margin:1rem 0 1.25rem}
 /* Grid */
 .album{display:grid;grid-template-columns:1fr;gap:1.25rem}
 
-/* =========================
-   Temple Card — estilo do screenshot
-   ========================= */
+/* ========== Temple Card (igual ao screenshot) ========== */
 .temple-card{
   background:#f1f2f6;
   border:1px solid var(--border);
@@ -83,15 +81,8 @@ main h2{text-align:center;margin:1rem 0 1.25rem}
   margin-right:.25rem;
 }
 .temple-card img{
-  display:block;
-  width:100%;
-  height:auto;
-  aspect-ratio:4/3;
-  object-fit:cover;
-  border-radius:8px;
-  border:1px solid #e3e3ef;
-  box-shadow:0 8px 20px rgba(0,0,0,.12);
-  margin-top:.5rem;
+  display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;
+  border-radius:8px;border:1px solid #e3e3ef;box-shadow:0 8px 20px rgba(0,0,0,.12);margin-top:.5rem;
 }
 a:focus-visible,.temple-card img:focus-visible{outline:none;box-shadow:var(--ring)}
 
