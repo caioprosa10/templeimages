@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Temple Album — WDD131</title>
+  <title>W04 — Filtered Temples | WDD131</title>
+  <meta name="description" content="W04 — Filtered Temples: dynamic temple cards with lazy loading and interactive filters (Old, New, Large, Small). Built for WDD 131." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
 
-  <!-- CSS (mobile-first + large) -->
-  <link rel="stylesheet" href="styles/temples.css" />
-  <link rel="stylesheet" href="styles/temples-large.css" media="(min-width: 48rem)" />
-  <script src="scripts/temples.js" defer></script>
+  <link rel="stylesheet" href="styles/filtered-temples.css" />
+  <link rel="stylesheet" href="styles/filtered-temples-large.css" media="(min-width: 48rem)" />
+
+  <script src="scripts/filtered-temples.js" defer></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="brand"><span>Temple Album</span></div>
+  <a class="skip-link" href="#album">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="brand" aria-label="Course">WDD 131: Dynamic Web Fundamentals</div>
 
     <button id="menu-toggle" class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">
       <span class="lines" aria-hidden="true"></span>
@@ -24,7 +27,7 @@
 
     <nav id="primary-nav" class="nav" aria-label="Primary">
       <ul>
-        <li><a class="active" href="#" data-filter="">Home</a></li>
+        <li><a class="active" href="#" data-filter="" aria-current="page" aria-pressed="true">Home</a></li>
         <li><a href="#" data-filter="old">Old</a></li>
         <li><a href="#" data-filter="new">New</a></li>
         <li><a href="#" data-filter="large">Large</a></li>
@@ -33,20 +36,17 @@
     </nav>
   </header>
 
-  <main>
+  <main id="main" role="main">
+    <h1 class="visually-hidden">W04 Assignment: Picture Album Enhancement</h1>
     <h2>Home</h2>
 
-    <!-- Vazio: os cards serão injetados via JS -->
     <section class="album" id="album" aria-live="polite"></section>
   </main>
 
-  <footer class="site-footer">
+  <footer class="site-footer" role="contentinfo">
     <p><span id="year"></span> © Caio Palladino Da Rosa</p>
     <p id="modified"></p>
     <p class="location">Petrópolis · Brazil</p>
   </footer>
 </body>
 </html>
-
-
-
