@@ -1,14 +1,14 @@
-/* Desktop layout */
-.menu-toggle{display:none}
-.site-header{padding:1rem 2rem}
-.nav{margin-left:auto}
-.nav ul{
-  display:flex!important;position:static;flex-direction:row;gap:.5rem;background:transparent;box-shadow:none
+@media (min-width: 48rem){
+  .menu-toggle{display:none}
+  .site-header{padding:1rem 2rem}
+  .nav{margin-left:auto}
+  .nav ul{
+    display:flex!important;position:static;flex-direction:row;gap:.5rem;background:transparent;box-shadow:none
+  }
+  .nav a{padding:.5rem .9rem;border-radius:.5rem}
+  .nav a:hover,.nav a:focus-visible{background:var(--brand-2)}
+  .nav a.active{background:var(--brand-2);font-weight:700}
+
+  /* 3 colunas com respiro */
+  .album{grid-template-columns:repeat(3,1fr);gap:1.25rem}
 }
-.nav a{padding:.5rem .9rem;border-radius:.5rem}
-.nav a:hover,.nav a:focus-visible{background:var(--brand-2)}
-.nav a.active{background:var(--brand-2);font-weight:700}
-
-/* Grid 3 colunas */
-.album{grid-template-columns:repeat(3,1fr);gap:1.25rem}
-
